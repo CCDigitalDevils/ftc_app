@@ -51,13 +51,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class HardwareStrafe
 {
     /* Public OpMode members. */
-    public DcMotor  Drive0   = null;
-    public DcMotor  Drive1  = null;
-    public DcMotor  Drive2   = null;
-    public DcMotor  Drive3  = null;
-    public Servo  clawServo     = null;
+    public DcMotor  Drive0 = null;
+    public DcMotor  Drive1 = null;
+    public DcMotor  Drive2 = null;
+    public DcMotor  Drive3 = null;
+    public DcMotor  Drive4 = null;
+    public Servo clawServo = null;
+    public Servo flipServo = null;
 
     public static final double MID_SERVO = 0 ;
+    public static final double SERVO_CLOSED = .32;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -78,15 +81,18 @@ public class HardwareStrafe
         Drive1 = hwMap.get(DcMotor.class, "drive1");
         Drive2  = hwMap.get(DcMotor.class, "drive2");
         Drive3 = hwMap.get(DcMotor.class, "drive3");
+        Drive4 = hwMap.get(DcMotor.class, "drive4");
         Drive0.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         Drive1.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         Drive2.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         Drive3.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        Drive4.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         // Set all motors to zero power
         Drive0.setPower(0);
         Drive1.setPower(0);
         Drive2.setPower(0);
         Drive3.setPower(0);
+        Drive4.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -94,10 +100,13 @@ public class HardwareStrafe
         Drive1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Drive2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Drive3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Drive4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
          //Define and initialize ALL installed servos.
-        clawServo  = hwMap.get(Servo.class, "Servo_1");
+        clawServo = hwMap.get(Servo.class, "servo1");
+        flipServo = hwMap.get(Servo.class, "servo0");
         clawServo.setPosition(MID_SERVO);
+        flipServo.setPosition(MID_SERVO);
     }
  }
 

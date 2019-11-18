@@ -68,6 +68,10 @@ public class StrafeAuto_Time_1 extends LinearOpMode {
     static final double     FORWARD_SPEED = 0.6;
     static final double     TURN_SPEED    = 0.5;
     private AutonomousUtilities au;
+    private STATE open = STATE.OPEN;
+    private STATE closed = STATE.CLOSED;
+    private STATE left = STATE.LEFT;
+    private STATE right = STATE.RIGHT;
 
     @Override
     public void runOpMode() {
@@ -86,6 +90,7 @@ public class StrafeAuto_Time_1 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        au.strafeTime(0.5, 45, 2.0);
+        au.rotate(.25, left, 1);
+        au.rotate(.25, right, 2);
     }
 }

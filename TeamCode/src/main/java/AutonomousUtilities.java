@@ -14,10 +14,10 @@ public class AutonomousUtilities {
     }
     public void strafe (double speed, double angle) {
         angle = angle + 45;
-        double lFrR = Math.sin(Math.toRadians(angle));
-        double rFlR = Math.cos(Math.toRadians(angle));
-        lFrR = Range.clip(lFrR, 0, 1);
-        rFlR = Range.clip(rFlR, 0, 1);
+        double lFrR = Math.sin(Math.toRadians(angle)) * speed;
+        double rFlR = Math.cos(Math.toRadians(angle)) * speed;
+        lFrR = Range.clip(lFrR, -1, 1);
+        rFlR = Range.clip(rFlR, -1, 1);
         if (linearOpMode.opModeIsActive()) {
             robot.Drive0.setPower(lFrR);
             robot.Drive1.setPower(rFlR);
@@ -31,16 +31,52 @@ public class AutonomousUtilities {
             robot.Drive1.setPower(0);
             robot.Drive2.setPower(0);
             robot.Drive3.setPower(0);
-        }
+            try {
+                Thread.sleep(200);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+    }
 
         public void strafeTime ( double speed, double angle, double time){
             runtime.reset();
             while (linearOpMode.opModeIsActive() && (runtime.seconds() < time)) {
-                strafe(speed, angle);
+                    strafe(speed, angle);
                 linearOpMode.telemetry.addData("Path", "Leg: %2.5f S Elapsed", runtime.seconds());
                 linearOpMode.telemetry.update();
             }
             stopMotors();
         }
-
+    public void strafeTime ( double speed, double angle, double time, STATE state){
+        if(state == STATE.OPEN){
+            clawOpen();
+        }
+        else if(state == STATE.CLOSED){
+            clawClosed();
+        }
+        strafeTime(speed, angle, time);
+    }
+        public void clawOpen (){
+        robot.clawServo.setPosition(robot.MID_SERVO);
+        }
+        public void clawClosed(){
+        robot.clawServo.setPosition(robot.SERVO_CLOSED);
+        }
+        public void rotate( double speed, STATE state, double time){
+            runtime.reset();
+            while (linearOpMode.opModeIsActive() && (runtime.seconds() < time)) {
+                if (state == STATE.LEFT){
+                    robot.Drive0.setPower(-1 * speed);
+                    robot.Drive1.setPower(1 * speed);
+                    robot.Drive2.setPower(-1 * speed);
+                    robot.Drive3.setPower(1 * speed);
+                }
+                else if (state == STATE.RIGHT){
+                    robot.Drive0.setPower(1 * speed);
+                    robot.Drive1.setPower(-1 * speed);
+                    robot.Drive2.setPower(1 * speed);
+                    robot.Drive3.setPower(-1 * speed);
+                }
+            }
+        }
     }

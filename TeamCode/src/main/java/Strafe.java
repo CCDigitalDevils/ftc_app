@@ -76,6 +76,7 @@ public class Strafe extends OpMode {
     private double rR2;
     private double lF2;
     private double rF2;
+    private double lift;
     //set up all variables
 
     @Override
@@ -137,25 +138,29 @@ public class Strafe extends OpMode {
         lF = lF1 + lF2;
         rF = rF1 + rF2;
 
+        lift = (gamepad2.right_trigger - gamepad2.left_trigger);
         //Normalize values so neither exceed +/- 1.0
         lR = Range.clip(lR, -1, 1);
         rR = Range.clip(rR, -1, 1);
         lF = Range.clip(lF, -1, 1);
         rF = Range.clip(rF, -1, 1);
+        lift = Range.clip(lift, -1, 1);
 
         robot.Drive0.setPower(lF);
         robot.Drive1.setPower(rF);
         robot.Drive2.setPower(lR);
         robot.Drive3.setPower(rR);
+        robot.Drive4.setPower(lift*.4);
+
 
         if (gamepad2.right_bumper)
         {
             offset = .0;
             clawstatus = STATE.OPEN;
         }
-        else if (gamepad2.right_trigger>0)
+        else if (gamepad2.left_bumper)
         {
-            offset = .26 ;
+            offset = robot.SERVO_CLOSED ;
             clawstatus = STATE.CLOSED;
         }
         robot.clawServo.setPosition(robot.MID_SERVO + offset);
