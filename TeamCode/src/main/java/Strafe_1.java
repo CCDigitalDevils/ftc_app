@@ -53,7 +53,7 @@ import java.text.SimpleDateFormat;
  */
 
 @TeleOp(name="Pushbot: Strafe_1", group="Strafebot")
-//@Disabled
+@Disabled
 public class Strafe_1 extends OpMode {
 
     /* Declare OpMode members. */

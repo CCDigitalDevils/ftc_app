@@ -56,22 +56,21 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Pushbot: Auto Drive By Time", group="Pushbot")
+@Autonomous(name="Auto Blue, Block Side", group="Pushbot")
 //@Disabled
-public class StrafeAuto_Time_1 extends LinearOpMode {
+public class AutoBlueBlockSide extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareStrafe         robot   = new HardwareStrafe();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
     private AutonomousUtilities au;
     private STATE open = STATE.OPEN;
     private STATE closed = STATE.CLOSED;
     private STATE left = STATE.LEFT;
     private STATE right = STATE.RIGHT;
+    private STATE up = STATE.UP;
+    private STATE down = STATE.DOWN;
 
     @Override
     public void runOpMode() {
@@ -84,13 +83,23 @@ public class StrafeAuto_Time_1 extends LinearOpMode {
         au = new AutonomousUtilities(robot, this, runtime);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        telemetry.addData("Status", "Ready to run Blue(block side)");    //
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        au.rotate(.25, left, 1);
-        au.rotate(.25, right, 2);
+        au.strafeTime(.50, 0 , 1.0, up, .5);
+        au.liftTime(.5, down, .5);
+        au.clawClosed();
+        au.pause();
+        au.strafeTime(.50,180,.5, up,.1);
+        au.rotate(.5, right, .8);
+        au.strafeTime(.5, 0, 3.0);
+        au.rotate(.5, left, .8);
+        au.liftTime( .5, up, .5);
+        au.strafeTime(.50, 0, .25);
+        au.liftTime(.5, down, .5);
+        au.clawOpen();
     }
 }

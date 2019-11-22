@@ -12,6 +12,14 @@ public class AutonomousUtilities {
         this.linearOpMode = linearOpMode;
         this.runtime = runtime;
     }
+    private double liftpower;
+    public void pause (){
+        try {
+            Thread.sleep(200);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     public void strafe (double speed, double angle) {
         angle = angle + 45;
         double lFrR = Math.sin(Math.toRadians(angle)) * speed;
@@ -31,11 +39,7 @@ public class AutonomousUtilities {
             robot.Drive1.setPower(0);
             robot.Drive2.setPower(0);
             robot.Drive3.setPower(0);
-            try {
-                Thread.sleep(200);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+            pause();
     }
 
         public void strafeTime ( double speed, double angle, double time){
@@ -62,6 +66,7 @@ public class AutonomousUtilities {
         public void clawClosed(){
         robot.clawServo.setPosition(robot.SERVO_CLOSED);
         }
+
         public void rotate( double speed, STATE state, double time){
             runtime.reset();
             while (linearOpMode.opModeIsActive() && (runtime.seconds() < time)) {
@@ -78,5 +83,33 @@ public class AutonomousUtilities {
                     robot.Drive3.setPower(-1 * speed);
                 }
             }
+        }
+        public void strafeTime(double speed, double angle, double time, STATE state, double liftTime){
+            liftpower = (liftTime / time) * .75;
+            runtime.reset();
+            while (linearOpMode.opModeIsActive() && (runtime.seconds() < time)) {
+                strafe(speed, angle);
+                if (state == STATE.UP){
+                    robot.Drive4.setPower(liftpower);
+                }
+                else if (state == STATE.DOWN){
+                    robot.Drive4.setPower(-liftpower);
+                }
+                linearOpMode.telemetry.addData("Path", "Leg: %.2f S Elapsed", runtime.seconds());
+                linearOpMode.telemetry.update();
+            }
+            stopMotors();
+        }
+        public void liftTime(double speed, STATE state, double time){
+            runtime.reset();
+            while (linearOpMode.opModeIsActive() && (runtime.seconds() < time)) {
+                if (state == STATE.UP){
+                    robot.Drive4.setPower(speed);
+                }
+                else if (state == STATE.DOWN){
+                    robot.Drive4.setPower(-speed);
+                }
+            }
+            stopMotors();
         }
     }

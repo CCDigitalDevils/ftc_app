@@ -46,7 +46,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: Strafe", group="Strafebot")
+@TeleOp(name="Strafe", group="Strafebot")
 //@Disabled
 public class Strafe extends OpMode {
 
@@ -77,6 +77,7 @@ public class Strafe extends OpMode {
     private double lF2;
     private double rF2;
     private double lift;
+    private double liftdown;
     //set up all variables
 
     @Override
@@ -100,6 +101,8 @@ public class Strafe extends OpMode {
         drive2 = -gamepad2.left_stick_y;
         strafe2 = gamepad2.left_stick_x;
         turn2 = gamepad2.right_stick_x;
+
+        liftdown = 0;
 
         if(gamepad1.dpad_up && incrementup == STATE.OFF)
         {
@@ -137,8 +140,10 @@ public class Strafe extends OpMode {
         rR = rR1 + rR2;
         lF = lF1 + lF2;
         rF = rF1 + rF2;
-
-        lift = (gamepad2.right_trigger - gamepad2.left_trigger);
+        if(gamepad2.right_bumper){
+            liftdown = 1;
+        }
+        lift = (gamepad2.right_trigger - liftdown);
         //Normalize values so neither exceed +/- 1.0
         lR = Range.clip(lR, -1, 1);
         rR = Range.clip(rR, -1, 1);
@@ -150,10 +155,10 @@ public class Strafe extends OpMode {
         robot.Drive1.setPower(rF);
         robot.Drive2.setPower(lR);
         robot.Drive3.setPower(rR);
-        robot.Drive4.setPower(lift*.4);
+        robot.Drive4.setPower(lift*.75);
 
 
-        if (gamepad2.right_bumper)
+        if (gamepad2.left_trigger>0)
         {
             offset = .0;
             clawstatus = STATE.OPEN;
