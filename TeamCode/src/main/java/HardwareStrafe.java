@@ -27,8 +27,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -58,7 +60,11 @@ public class HardwareStrafe
     public DcMotor  Drive3 = null;
     public DcMotor  Drive4 = null;
     public Servo clawServo = null;
-    public Servo flipServo = null;
+    public Servo armServo = null;
+    public Servo dragServo = null;
+    public DigitalChannel bottomedSensor = null;
+    public DigitalChannel maxxedSensor = null;
+    public  ModernRoboticsI2cGyro Gyro = null;
 
     public static final double MID_SERVO = 0 ;
     public static final double SERVO_CLOSED = .32;
@@ -83,12 +89,19 @@ public class HardwareStrafe
         Drive2  = hwMap.get(DcMotor.class, "drive2");
         Drive3 = hwMap.get(DcMotor.class, "drive3");
         Drive4 = hwMap.get(DcMotor.class, "drive4");
+        bottomedSensor = hwMap.get(DigitalChannel.class, "touch0");
+        maxxedSensor = hwMap.get(DigitalChannel.class, "touch1");
         Drive0.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         Drive1.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         Drive2.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         Drive3.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         Drive4.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        bottomedSensor.setMode(DigitalChannel.Mode.OUTPUT);
+        maxxedSensor.setMode(DigitalChannel.Mode.OUTPUT);
         // Set all motors to zero power
+
+        Drive4.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         Drive0.setPower(0);
         Drive1.setPower(0);
         Drive2.setPower(0);
@@ -105,9 +118,11 @@ public class HardwareStrafe
 
          //Define and initialize ALL installed servos.
         clawServo = hwMap.get(Servo.class, "servo1");
-        flipServo = hwMap.get(Servo.class, "servo0");
+        armServo = hwMap.get(Servo.class, "servo0");
+        dragServo = hwMap.get(Servo.class, "servo2");
         clawServo.setPosition(MID_SERVO);
-        flipServo.setPosition(MID_SERVO);
+        armServo.setPosition(.30);
+        dragServo.setPosition(MID_SERVO);
     }
  }
 

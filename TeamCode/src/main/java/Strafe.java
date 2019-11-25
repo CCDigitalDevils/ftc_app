@@ -27,7 +27,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
@@ -55,6 +54,11 @@ public class Strafe extends OpMode {
     STATE incrementup   = STATE.OFF;
     STATE incrementdown = STATE.OFF;
     STATE clawstatus = STATE.OPEN;
+    STATE clawClosed = STATE.OFF;
+    STATE clawOpen = STATE.OFF;
+    STATE dragStatus = STATE.UP;
+    STATE dragDown = STATE.OFF;
+    STATE dragUp = STATE.OFF;
     private double Gear = 0.75;
     private static final Double GearChange = .05;
     private double offset = 0;
@@ -77,13 +81,16 @@ public class Strafe extends OpMode {
     private double lF2;
     private double rF2;
     private double lift;
+    private double liftup;
     private double liftdown;
+    private double armOffset = .30;
+    private double dragoffset = 0;
     //set up all variables
 
     @Override
     public void init() {
         robot.init(hardwareMap);
-        Gear = 0.75;
+        Gear = 0.30;
         offset = 0.0;
 
         // Send telemetry message to signify robot waiting;
@@ -102,7 +109,8 @@ public class Strafe extends OpMode {
         strafe2 = gamepad2.left_stick_x;
         turn2 = gamepad2.right_stick_x;
 
-        liftdown = 0;
+        liftup = gamepad2.right_trigger;
+        liftdown = gamepad2.left_trigger;
 
         if(gamepad1.dpad_up && incrementup == STATE.OFF)
         {
@@ -140,10 +148,15 @@ public class Strafe extends OpMode {
         rR = rR1 + rR2;
         lF = lF1 + lF2;
         rF = rF1 + rF2;
-        if(gamepad2.right_bumper){
-            liftdown = 1;
+
+        if(robot.bottomedSensor.getState() == true){
+            liftdown = 0;
         }
-        lift = (gamepad2.right_trigger - liftdown);
+        else if (robot.maxxedSensor.getState() == true){
+            liftup = 0;
+        }
+
+        lift = (liftup - liftdown);
         //Normalize values so neither exceed +/- 1.0
         lR = Range.clip(lR, -1, 1);
         rR = Range.clip(rR, -1, 1);
@@ -155,20 +168,58 @@ public class Strafe extends OpMode {
         robot.Drive1.setPower(rF);
         robot.Drive2.setPower(lR);
         robot.Drive3.setPower(rR);
-        robot.Drive4.setPower(lift*.75);
+        robot.Drive4.setPower(lift*.4);
 
+        if (gamepad2.right_bumper){
+            armOffset -= .001;
+        }
+        else if (gamepad2.left_bumper){
+            armOffset += .001;
+        }
+        else if (gamepad2.y){
+            armOffset = .30;
+        }
+        armOffset = Range.clip(armOffset, 0, .6);
 
-        if (gamepad2.left_trigger>0)
-        {
+        if (gamepad2.a && clawstatus == STATE.OPEN && clawClosed == STATE.OFF) {
+            clawClosed = STATE.INPROGRESS;
+        }
+        else if (!gamepad2.a && clawstatus == STATE.OPEN && clawClosed == STATE.INPROGRESS){
+            offset = robot.SERVO_CLOSED;
+            clawstatus = STATE.CLOSED;
+            clawClosed = STATE.OFF;
+        }
+        if (gamepad2.a && clawstatus == STATE.CLOSED && clawOpen == STATE.OFF){
+            clawOpen = STATE.INPROGRESS;
+        }
+        else if (!gamepad2.a && clawstatus == STATE.CLOSED && clawOpen == STATE.INPROGRESS){
             offset = .0;
             clawstatus = STATE.OPEN;
+            clawOpen = STATE.OFF;
         }
-        else if (gamepad2.left_bumper)
-        {
-            offset = robot.SERVO_CLOSED ;
-            clawstatus = STATE.CLOSED;
+
+        if (gamepad2.b && dragStatus == STATE.UP && dragDown == STATE.OFF) {
+            dragDown = STATE.INPROGRESS;
         }
-        robot.clawServo.setPosition(robot.MID_SERVO + offset);
+        else if (!gamepad2.b && dragStatus == STATE.UP && dragDown == STATE.INPROGRESS){
+            dragoffset = .4;
+            dragStatus = STATE.DOWN;
+            dragDown = STATE.OFF;
+        }
+        if (gamepad2.b && dragStatus == STATE.DOWN && dragUp == STATE.OFF){
+            dragUp = STATE.INPROGRESS;
+        }
+        else if (!gamepad2.b && dragStatus == STATE.DOWN && dragUp == STATE.INPROGRESS){
+            dragoffset = .0;
+            dragStatus = STATE.UP;
+            dragUp = STATE.OFF;
+        }
+
+        robot.clawServo.setPosition(offset);
+        robot.armServo.setPosition(armOffset);
+        robot.dragServo.setPosition(dragoffset);
+
+        telemetry.addData("armoffset",  "%.2f", armOffset);
 
         telemetry.addData("leftF",  "%.2f", lF);
         telemetry.addData("leftR",  "%.2f", lR);

@@ -28,8 +28,12 @@
  */
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -78,24 +82,21 @@ public class AutoRedBlockSide extends LinearOpMode {
         robot.init(hardwareMap);
         au = new AutonomousUtilities(robot, this, runtime);
 
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run Blue(block side)");    //
-        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        au.strafeTime(.50, 0 , 1.0, up, .5);
-        au.liftTime(.5, down, .5);
+        au.strafeTime(.50, 10 , 1.1);
+        au.strafeTime(0,0,.25);
         au.clawClosed();
         au.pause();
-        au.strafeTime(.50,180,.5, up,.1);
-        au.rotate(.5, left, .8);
-        au.strafeTime(.5, 0, 3.0);
+        au.strafeTime(.5,180,.6, up, .3);
         au.rotate(.5, right, .8);
-        au.liftTime( .5, up, .5);
-        au.strafeTime(.50, 0, .25);
-        au.liftTime(.5, down, .5);
+        au.strafeTime(.5,0,3.2);
+        au.rotate(.5, left, .8);
+        au.strafeTime(.5,0, .5, up, .5);
+        au.strafeTime(0,0,.5, down, .1);
         au.clawOpen();
+        au.pause();
     }
 }
