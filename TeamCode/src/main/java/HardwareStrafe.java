@@ -64,7 +64,8 @@ public class HardwareStrafe
     public Servo dragServo = null;
     public DigitalChannel bottomedSensor = null;
     public DigitalChannel maxxedSensor = null;
-    public  ModernRoboticsI2cGyro Gyro = null;
+    public  ModernRoboticsI2cGyro gyro = null;
+
 
     public static final double MID_SERVO = 0 ;
     public static final double SERVO_CLOSED = .32;
@@ -89,15 +90,16 @@ public class HardwareStrafe
         Drive2  = hwMap.get(DcMotor.class, "drive2");
         Drive3 = hwMap.get(DcMotor.class, "drive3");
         Drive4 = hwMap.get(DcMotor.class, "drive4");
-        bottomedSensor = hwMap.get(DigitalChannel.class, "touch0");
-        maxxedSensor = hwMap.get(DigitalChannel.class, "touch1");
+        bottomedSensor = hwMap.get(DigitalChannel.class, "touch0-1");
+        maxxedSensor = hwMap.get(DigitalChannel.class, "touch2-3");
+        gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
         Drive0.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         Drive1.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         Drive2.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         Drive3.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         Drive4.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        bottomedSensor.setMode(DigitalChannel.Mode.OUTPUT);
-        maxxedSensor.setMode(DigitalChannel.Mode.OUTPUT);
+        bottomedSensor.setMode(DigitalChannel.Mode.INPUT);
+        maxxedSensor.setMode(DigitalChannel.Mode.INPUT);
         // Set all motors to zero power
 
         Drive4.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

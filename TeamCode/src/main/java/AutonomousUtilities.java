@@ -7,11 +7,6 @@ public class AutonomousUtilities {
     private LinearOpMode linearOpMode;
     private ElapsedTime runtime;
 
-    public AutonomousUtilities() {
-    }
-
-    ;
-
     public AutonomousUtilities(HardwareStrafe robot, LinearOpMode linearOpMode, ElapsedTime runtime) {
         this.robot = robot;
         this.linearOpMode = linearOpMode;

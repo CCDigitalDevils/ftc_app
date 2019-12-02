@@ -149,14 +149,18 @@ public class Strafe extends OpMode {
         lF = lF1 + lF2;
         rF = rF1 + rF2;
 
-        if(robot.bottomedSensor.getState() == true){
+        if(!robot.bottomedSensor.getState() == true){
             liftdown = 0;
+            telemetry.addData("lift","is completely lowered" );
+
         }
-        else if (robot.maxxedSensor.getState() == true){
+        else if (!robot.maxxedSensor.getState() == true){
             liftup = 0;
+            telemetry.addData("lift","is completely raised" );
+
         }
 
-        lift = (liftup - liftdown);
+        lift = (liftup - liftdown*.5);
         //Normalize values so neither exceed +/- 1.0
         lR = Range.clip(lR, -1, 1);
         rR = Range.clip(rR, -1, 1);
@@ -168,7 +172,7 @@ public class Strafe extends OpMode {
         robot.Drive1.setPower(rF);
         robot.Drive2.setPower(lR);
         robot.Drive3.setPower(rR);
-        robot.Drive4.setPower(lift*.4);
+        robot.Drive4.setPower(lift*.6);
 
         if (gamepad2.right_bumper){
             armOffset -= .001;
@@ -219,14 +223,13 @@ public class Strafe extends OpMode {
         robot.armServo.setPosition(armOffset);
         robot.dragServo.setPosition(dragoffset);
 
-        telemetry.addData("armoffset",  "%.2f", armOffset);
-
         telemetry.addData("leftF",  "%.2f", lF);
         telemetry.addData("leftR",  "%.2f", lR);
         telemetry.addData("rightF",  "%.2f", rR);
         telemetry.addData("rightR",  "%.2f", rR);
         telemetry.addData("Gear","%.2f", Gear);
         telemetry.addData("ClawStatus", clawstatus);
+        telemetry.update();
 
     }
 }
