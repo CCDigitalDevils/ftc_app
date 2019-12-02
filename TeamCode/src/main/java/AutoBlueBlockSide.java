@@ -29,6 +29,7 @@
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -64,6 +65,7 @@ public class AutoBlueBlockSide extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
     private AutonomousUtilities au;
+    private GyroUtilities gu;
     private STATE open = STATE.OPEN;
     private STATE closed = STATE.CLOSED;
     private STATE left = STATE.LEFT;
@@ -80,22 +82,28 @@ public class AutoBlueBlockSide extends LinearOpMode {
          */
         robot.init(hardwareMap);
         au = new AutonomousUtilities(robot, this, runtime);
+        telemetry.addData(">", "Calibrating Gyro");    //
+        telemetry.update();
 
+        robot.gyro.calibrate();
 
+        // make sure the gyro is calibrated before continuing
+        while (!isStopRequested() && robot.gyro.isCalibrating())  {
+            sleep(50);
+            idle();
+        }
 
+        telemetry.addData(">", "Robot Ready.");    //
+        telemetry.update();
         // Wait for the game to start (driver presses PLAY)
+
+        robot.Drive0.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.Drive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.Drive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.Drive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         waitForStart();
 
-        au.strafeTime(.50, 0 , 1.0, up, .5);
-        au.liftTime(.5, down, .5);
-        au.clawClosed();
-        au.strafeTime(.50,180,.5, up,.1);
-        au.rotate(.5, left, .8);
-        au.strafeTime(.5, 0, 3.0);
-        au.rotate(.5, right, .8);
-        au.liftTime( .5, up, .5);
-        au.strafeTime(.50, 0, .25);
-        au.liftTime(.5, down, .5);
-        au.clawOpen();
+        gu.gyroTurn(.5,45);
     }
 }
