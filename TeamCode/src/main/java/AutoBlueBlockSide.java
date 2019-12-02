@@ -79,7 +79,7 @@ public class AutoBlueBlockSide extends LinearOpMode {
          */
         robot.init(hardwareMap);
         au = new AutonomousUtilities(robot, this, runtime);
-        telemetry.addData(">", "Calibrating Gyro");    //
+        /*telemetry.addData(">", "Calibrating Gyro");    //
         telemetry.update();
 
         robot.gyro.calibrate();
@@ -97,10 +97,24 @@ public class AutoBlueBlockSide extends LinearOpMode {
         robot.Drive0.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.Drive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.Drive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.Drive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.Drive3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
 
         waitForStart();
 
-        gu.gyroTurn(.5,45);
+        au.strafeTime(.50, 0 , 1.4);
+        au.clawClosed();
+        au.pause();
+        au.strafeTime(.5,180,.3, up, .1);
+        au.rotate(.6, left, .8);
+        au.strafeTime(.5,0,4);
+        au.rotate(.6, right, .8);
+        au.strafeTime(0.0,0, .2, up, .5);
+        au.strafeTime(.5, 0, .5) ;
+        au.strafeTime(0,0,.5, down, .1);
+        au.clawOpen();
+        au.pause();
+        au.strafeTime(.5, 180, .5);
+        au.rotate(.6, right, .8);
+        au.strafeTime(.5,0,2);
     }
 }

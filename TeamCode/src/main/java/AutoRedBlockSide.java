@@ -86,18 +86,20 @@ public class AutoRedBlockSide extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        au.strafeTime(.50, 6 , 1.25);
-        au.strafeTime(0,0,.25);
+        au.strafeTime(.50, 15 , 1.05);
         au.clawClosed();
         au.pause();
-        au.strafeTime(.5,180,.6, up, .25);
-        au.rotate(.6, right, .9);
-        au.strafeTime(.5,0,6);
-        au.rotate(.6, left, .9);
-        au.strafeTime(0.0,0, .5, up, .5);
-        au.strafeTime(.5, 0, .5) ;
+        au.strafeTime(.5,180,.1, up, .1);
+        au.rotate(.5, right, .8);
+        au.strafeTime(.5,0,3);
+        au.rotate(.5, left, .75);
+        au.strafeTime(0.0,0, .2, up, .5);
+        au.strafeTime(.5, 0, .3) ;
         au.strafeTime(0,0,.5, down, .1);
         au.clawOpen();
         au.pause();
+        au.strafeTime(.5, 180, .5);
+        au.rotate(.5, left, .75);
+        au.strafeTime(.5,0,.75);
     }
 }
