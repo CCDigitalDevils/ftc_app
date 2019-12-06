@@ -123,9 +123,21 @@ public class AutonomousUtilities {
     public void pause(){
         try {
             Thread.sleep(200);
-        }catch(Exception e){
+        }catch(Exception e) {
             e.printStackTrace();
         }
+    }
+    public void pause(double times){
+        for(int i=0; i<(times*10); i++) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            linearOpMode.telemetry.addData("i=", i);
+            linearOpMode.telemetry.update();
+        }
+
     }
 }
 

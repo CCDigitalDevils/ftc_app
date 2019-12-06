@@ -31,9 +31,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -56,15 +53,16 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Red, Block Side", group="Pushbot")
-//@Disabled
-public class AutoRedBlockSide extends LinearOpMode {
+@Autonomous(name="Auto Test", group="Pushbot")
+@Disabled
+public class AutoTest extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareStrafe         robot   = new HardwareStrafe();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     private AutonomousUtilities au;
+    private AutoEncoder ae;
     private STATE open = STATE.OPEN;
     private STATE closed = STATE.CLOSED;
     private STATE left = STATE.LEFT;
@@ -81,27 +79,14 @@ public class AutoRedBlockSide extends LinearOpMode {
          */
         robot.init(hardwareMap);
         au = new AutonomousUtilities(robot, this, runtime);
+        ae = new AutoEncoder(robot, this, runtime);
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        au.strafeTime(.50, 15 , 1);
-        au.clawClosed();
-        au.pause();
-        au.strafeTime(.5,180,.18, up, .1);
-        au.rotate(.5, right, .72);
-        au.strafeTime(.5,0,2.35);
-        au.strafeTime(0.0,0, .2, up, .5);
-        au.rotate(.5, left, .65);
-        au.strafeTime(.5, 0, .15) ;
-        au.strafeTime(0,0,.5, down, .1);
-        au.clawOpen();
-        au.strafeTime(0,0,.1,up,.2);
-        au.pause();
-        au.strafeTime(.5, 180, .2);
-        au.strafeTime(0,0,.1,down,.2);
-        au.rotate(.5, left, .67);
-        au.strafeTime(.5,0,1.1);
+        ae.encoderDrive(.5,12);
+
+
     }
 }

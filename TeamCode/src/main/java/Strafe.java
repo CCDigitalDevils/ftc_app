@@ -214,7 +214,7 @@ public class Strafe extends OpMode {
             dragUp = STATE.INPROGRESS;
         }
         else if (!gamepad2.b && dragStatus == STATE.DOWN && dragUp == STATE.INPROGRESS){
-            dragoffset = .0;
+            dragoffset = .025;
             dragStatus = STATE.UP;
             dragUp = STATE.OFF;
         }

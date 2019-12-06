@@ -101,20 +101,22 @@ public class AutoBlueBlockSide extends LinearOpMode {
 
         waitForStart();
 
-        au.strafeTime(.50, 0 , 1.4);
+        au.strafeTime(.50, 350 , 1);
         au.clawClosed();
         au.pause();
-        au.strafeTime(.5,180,.3, up, .1);
-        au.rotate(.6, left, .8);
-        au.strafeTime(.5,0,4);
-        au.rotate(.6, right, .8);
+        au.strafeTime(.5,180,.18, up, .1);
+        au.rotate(.5, left, .68);
+        au.strafeTime(.5,0,2.35);
         au.strafeTime(0.0,0, .2, up, .5);
-        au.strafeTime(.5, 0, .5) ;
+        au.rotate(.5, right, .68);
+        au.strafeTime(.5, 0, .15) ;
         au.strafeTime(0,0,.5, down, .1);
         au.clawOpen();
+        au.strafeTime(0,0,.1,up,.2);
         au.pause();
-        au.strafeTime(.5, 180, .5);
-        au.rotate(.6, right, .8);
-        au.strafeTime(.5,0,2);
+        au.strafeTime(.5, 180, .2);
+        au.strafeTime(0,0,.1,down,.2);
+        au.rotate(.5, right, .7);
+        au.strafeTime(.5,0,1.1);
     }
 }

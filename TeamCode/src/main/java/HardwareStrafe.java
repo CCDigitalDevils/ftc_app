@@ -68,7 +68,7 @@ public class HardwareStrafe
 
 
     public static final double MID_SERVO = 0 ;
-    public static final double SERVO_CLOSED = .32;
+    public static final double SERVO_CLOSED = .35;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -124,7 +124,7 @@ public class HardwareStrafe
         dragServo = hwMap.get(Servo.class, "servo2");
         clawServo.setPosition(MID_SERVO);
         armServo.setPosition(.30);
-        dragServo.setPosition(MID_SERVO);
+        dragServo.setPosition(.025);
     }
  }
 
