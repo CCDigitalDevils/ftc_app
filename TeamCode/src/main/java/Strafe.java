@@ -93,6 +93,9 @@ public class Strafe extends OpMode {
         Gear = 0.30;
         offset = 0.0;
 
+        robot.clawServo.setPosition(robot.MID_SERVO);
+        robot.armServo.setPosition(.30);
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Ready");
     }

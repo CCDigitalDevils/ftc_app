@@ -27,16 +27,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-
-import java.text.SimpleDateFormat;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
@@ -52,9 +49,9 @@ import java.text.SimpleDateFormat;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: Strafe_1", group="Strafebot")
-@Disabled
-public class Strafe_1 extends OpMode {
+@TeleOp(name="Light Test", group="Strafebot")
+//@Disabled
+public class Light_Test extends OpMode {
 
     /* Declare OpMode members. */
     HardwareStrafe robot           = new HardwareStrafe();   // Use a Pushbot's hardware
@@ -76,77 +73,17 @@ public class Strafe_1 extends OpMode {
     @Override
     public void init() {
         robot.init(hardwareMap);
-        Gear = 0.5;
-        offset = 0.0;
 
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Ready");
     }
 
     @Override
     public void loop() {
-      //activate variables
-       //grab values from cotroller
-        drive = -gamepad1.left_stick_y;
-        strafe = gamepad1.left_stick_x;
-        turn = gamepad1.right_stick_x;
+        telemetry.addData("red level", robot.colorSensor.red()/10240*255);
+        telemetry.addData("green level",  robot.colorSensor.green()/10240*255);
+        telemetry.addData("blue level",  robot.colorSensor.blue()/10240*255);
+        telemetry.addData("alpha level",  robot.colorSensor.alpha()/10240*255);
+        telemetry.update();
 
-        if(gamepad1.dpad_up && incrementup == STATE.OFF)
-        {
-            incrementup = STATE.INPROGRESS;
-        }
-        else if (!gamepad1.dpad_up && incrementup == STATE.INPROGRESS)
-        {
-            Gear += GearChange;
-            incrementup = STATE.OFF;
-        }
-
-        if(gamepad1.dpad_down && incrementdown == STATE.OFF)
-        {
-            incrementdown = STATE.INPROGRESS;
-        }
-        else if (!gamepad1.dpad_down && incrementdown == STATE.INPROGRESS)
-        {
-            Gear -= GearChange;
-            incrementdown = STATE.OFF;
-        }
-        Gear = Range.clip(Gear, 0.25, 1);
-
-        //combine drive and turn for blended motion
-        leftR = ((-strafe + drive) + turn) * Gear;
-        rightR = ((strafe + drive) - turn) * Gear;
-        leftF = ((strafe + drive) + turn) * Gear;
-        rightF = ((-strafe + drive) - turn) * Gear;
-
-        //Normalize values so neither exceed +/- 1.0
-        leftR = Range.clip(leftR, -1, 1);
-        rightR = Range.clip(rightR, -1, 1);
-        leftF = Range.clip(leftF, -1, 1);
-        rightF = Range.clip(rightF, -1, 1);
-
-        robot.Drive0.setPower(leftF);
-        robot.Drive1.setPower(rightF);
-        robot.Drive2.setPower(leftR);
-        robot.Drive3.setPower(rightR);
-
-        if (gamepad1.right_bumper)
-        {
-            offset = .0;
-            clawstatus = STATE.OPEN;
-        }
-        else if (gamepad1.right_trigger>0)
-        {
-            offset = .26 ;
-            clawstatus = STATE.CLOSED;
-        }
-        robot.clawServo.setPosition(robot.MID_SERVO + offset);
-
-        telemetry.addData("leftF",  "%.2f", leftF);
-        telemetry.addData("leftR",  "%.2f", leftR);
-        telemetry.addData("rightF",  "%.2f", rightF);
-        telemetry.addData("rightR",  "%.2f", rightR);
-        telemetry.addData("Gear","%.2f", Gear);
-        telemetry.addData("ClawStatus", clawstatus);
 
     }
 }

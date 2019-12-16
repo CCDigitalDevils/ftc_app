@@ -27,74 +27,66 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
+
+import java.text.SimpleDateFormat;
 
 /**
- * This file illustrates the concept of driving a path based on time.
- * It uses the common Pushbot hardware class to define the drive on the robot.
+ * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
+ * All device access is managed through the HardwarePushbot class.
  * The code is structured as a LinearOpMode
  *
- * The code assumes that you do NOT have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByEncoder;
- *
- *   The desired path in this example is:
- *   - Drive forward for 3 seconds
- *   - Spin right for 1.3 seconds
- *   - Drive Backwards for 1 Second
- *   - Stop and close the claw.
- *
- *  The code is written in a simple form with no optimizations.
- *  However, there are several ways that this type of sequence could be streamlined,
+ * This particular OpMode executes a POV Game style Teleop for a PushBot
+ * In this mode the left stick moves the robot FWD and back, the Right stick turns left and right.
+ * It raises and lowers the claw using the Gampad Y and A buttons respectively.
+ * It also opens and closes the claws slowly using the left and right Bumper buttons.
  *
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Blue, Block Side", group="Pushbot")
+@TeleOp(name="Encoder test", group="Strafebot")
 //@Disabled
-public class AutoBlueBlockSide extends LinearOpMode {
+public class Encoder_Test extends OpMode {
 
     /* Declare OpMode members. */
-    HardwareStrafeAuto         robot   = new HardwareStrafeAuto();   // Use a Pushbot's hardware
-    private ElapsedTime     runtime = new ElapsedTime();
-
-    private AutonomousUtilities au;
-    private GyroUtilities gu;
-    private AutoEncoder ae;
-    private STATE open = STATE.OPEN;
-    private STATE closed = STATE.CLOSED;
-    private STATE left = STATE.LEFT;
-    private STATE right = STATE.RIGHT;
-    private STATE up = STATE.UP;
-    private STATE down = STATE.DOWN;
+    HardwareStrafe robot           = new HardwareStrafe();   // Use a Pushbot's hardware
+    STATE incrementup   = STATE.OFF;
+    STATE incrementdown = STATE.OFF;
+    STATE clawstatus = STATE.OPEN;
+    private double Gear = 0.25;
+    private static final Double GearChange = .05;
+    private double offset = 0;
+    private double drive;
+    private double strafe;
+    private double turn;
+    private double leftR;
+    private double rightR;
+    private double leftF;
+    private double rightF;
+    //set up all variables
 
     @Override
-    public void runOpMode() {
-
-        /*
-         * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
-         */
+    public void init() {
         robot.init(hardwareMap);
-        au = new AutonomousUtilities(robot, this, runtime);
-        gu = new GyroUtilities(robot, this, runtime);
-        ae = new AutoEncoder(robot,this,runtime);
+    }
 
-        waitForStart();
-
-        robot.clawServo.setPosition(robot.MID_SERVO);
-        robot.armServo.setPosition(.30);
-
-        ae.encoderDrive(.5,32);
-        au.clawClosed();
-        au.pause(1);
-        ae.encoderDrive(-.5, -2);
-        gu.gyroTurn(.25,90);
-        ae.encoderDrive(.5,96);
-        gu.gyroTurn(.25,0);
-
+    @Override
+    public void loop() {
+        double leftF = robot.Drive0.getCurrentPosition();
+      telemetry.addData("encoder, left front", "%.2f", leftF );
+        double rightF = robot.Drive1.getCurrentPosition();
+      telemetry.addData("encoder, right front", "%.2f", rightF );
+        double leftR = robot.Drive2.getCurrentPosition();
+      telemetry.addData("encoder, left rear", "%.2f", leftR );
+        double rightR = robot.Drive3.getCurrentPosition();
+      telemetry.addData("encoder, right rear", "%.2f", rightR );
     }
 }

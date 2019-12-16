@@ -27,11 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.rev.RevTouchSensor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -64,7 +67,8 @@ public class HardwareStrafe
     public Servo dragServo = null;
     public DigitalChannel bottomedSensor = null;
     public DigitalChannel maxxedSensor = null;
-    public  ModernRoboticsI2cGyro gyro = null;
+    public BNO055IMU imu = null;
+    public ColorSensor colorSensor = null;
 
 
     public static final double MID_SERVO = 0 ;
@@ -92,7 +96,7 @@ public class HardwareStrafe
         Drive4 = hwMap.get(DcMotor.class, "drive4");
         bottomedSensor = hwMap.get(DigitalChannel.class, "touch0-1");
         maxxedSensor = hwMap.get(DigitalChannel.class, "touch2-3");
-        gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
+        colorSensor = hwMap.get(ColorSensor.class, "colorsensor");
         Drive0.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         Drive1.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         Drive2.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
@@ -101,6 +105,14 @@ public class HardwareStrafe
         bottomedSensor.setMode(DigitalChannel.Mode.INPUT);
         maxxedSensor.setMode(DigitalChannel.Mode.INPUT);
         // Set all motors to zero power
+
+        imu = hwMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters= new BNO055IMU.Parameters();
+        parameters.mode  =  BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
+        imu.initialize(parameters);
 
         Drive4.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -122,8 +134,8 @@ public class HardwareStrafe
         clawServo = hwMap.get(Servo.class, "servo1");
         armServo = hwMap.get(Servo.class, "servo0");
         dragServo = hwMap.get(Servo.class, "servo2");
-        clawServo.setPosition(MID_SERVO);
-        armServo.setPosition(.30);
+        clawServo.setPosition(SERVO_CLOSED);
+        armServo.setPosition(.65);
         dragServo.setPosition(.025);
     }
  }

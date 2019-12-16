@@ -11,10 +11,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 public class GyroUtilities {
     private LinearOpMode linearOpMode;
     private AutonomousUtilities au;
+    private ElapsedTime runtime;
+
+    public GyroUtilities(HardwareStrafe robot, LinearOpMode linearOpMode, ElapsedTime runtime) {
+        this.robot = robot;
+        this.linearOpMode = linearOpMode;
+        this.runtime = runtime;
+    }
 
     HardwareStrafe robot   = new HardwareStrafe();   // Use a Pushbot's hardware
 
@@ -30,7 +43,7 @@ public class GyroUtilities {
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
+    static final double     P_TURN_COEFF            = .25;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
 
     /**
@@ -49,6 +62,9 @@ public class GyroUtilities {
         // keep looping while we are still active, and not on heading.
         while (linearOpMode.opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
             // Update telemetry & Allow time for other processes to run.
+            Orientation o = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+
+            linearOpMode.telemetry.addData("Position ", o.thirdAngle);
             linearOpMode.telemetry.update();
         }
     }
@@ -136,7 +152,8 @@ public class GyroUtilities {
         double robotError;
 
         // calculate error in -179 to +180 range  (
-        robotError = targetAngle - robot.gyro.getIntegratedZValue();
+        Orientation orientation = robot.imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        robotError = targetAngle - orientation.thirdAngle;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;

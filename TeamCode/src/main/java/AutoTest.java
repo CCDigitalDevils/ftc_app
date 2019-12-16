@@ -54,15 +54,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Auto Test", group="Pushbot")
-@Disabled
+//@Disabled
 public class AutoTest extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareStrafe         robot   = new HardwareStrafe();   // Use a Pushbot's hardware
+    HardwareStrafeAuto         robot   = new HardwareStrafeAuto();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     private AutonomousUtilities au;
     private AutoEncoder ae;
+    private GyroUtilities gu;
     private STATE open = STATE.OPEN;
     private STATE closed = STATE.CLOSED;
     private STATE left = STATE.LEFT;
@@ -80,12 +81,13 @@ public class AutoTest extends LinearOpMode {
         robot.init(hardwareMap);
         au = new AutonomousUtilities(robot, this, runtime);
         ae = new AutoEncoder(robot, this, runtime);
+        gu = new GyroUtilities(robot, this, runtime);
 
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        ae.encoderDrive(.5,12);
+        ae.encoderDrive(-.5,-10);
 
 
     }

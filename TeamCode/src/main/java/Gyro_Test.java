@@ -32,6 +32,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
  * All device access is managed through the HardwarePushbot class.
@@ -46,9 +51,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: Strafe_2", group="Strafebot")
-@Disabled
-public class Strafe_2 extends OpMode {
+@TeleOp(name="Gyro Test", group="Strafebot")
+//@Disabled
+public class Gyro_Test extends OpMode {
 
     /* Declare OpMode members. */
     HardwareStrafe robot           = new HardwareStrafe();   // Use a Pushbot's hardware
@@ -71,33 +76,16 @@ public class Strafe_2 extends OpMode {
     public void init() {
         robot.init(hardwareMap);
 
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Ready");
     }
 
     @Override
     public void loop() {
-      //activate variables
-       //grab values from cotroller
-        drive = -gamepad1.left_stick_y;
+        Orientation o = robot.imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        telemetry.addData("x axis", o.firstAngle);
+        telemetry.addData("y axis", o.secondAngle);
+        telemetry.addData("z axis", o.thirdAngle);
+        telemetry.update();
 
-        if (gamepad1.right_bumper)
-        {
-            offset = .0;
-            clawstatus = STATE.OPEN;
-        }
-        else if (gamepad1.right_trigger>0)
-        {
-            offset = .26 ;
-            clawstatus = STATE.CLOSED;
-        }
-
-        robot.clawServo.setPosition(robot.MID_SERVO + offset);
-        robot.Drive0.setPower(drive*.25);
-
-
-        telemetry.addData("Power",  "%.2f", drive);
-        telemetry.addData("ClawStatus", clawstatus);
 
     }
 }

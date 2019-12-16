@@ -134,7 +134,7 @@ public class AutonomousUtilities {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            linearOpMode.telemetry.addData("i=", i);
+            linearOpMode.telemetry.addData("time left = ", times - i/10);
             linearOpMode.telemetry.update();
         }
 

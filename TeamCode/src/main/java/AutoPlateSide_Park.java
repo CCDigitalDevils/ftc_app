@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Plate Side: Park", group="Pushbot")
+@Autonomous(name="Auto Park", group="Pushbot")
 //@Disabled
 public class AutoPlateSide_Park extends LinearOpMode {
 
@@ -82,7 +82,10 @@ public class AutoPlateSide_Park extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        au.pause(0);
+        robot.clawServo.setPosition(robot.MID_SERVO);
+        robot.armServo.setPosition(.30);
+
+        au.pause(25);
         au.strafeTime(.5,0,1);
     }
 }
